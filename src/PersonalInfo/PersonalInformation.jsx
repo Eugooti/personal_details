@@ -1,8 +1,10 @@
 import { useForm } from "antd/es/form/Form.js";
-import { Form, Input } from "antd";
+import {Button, Form, Input, Space} from "antd";
 import Radio from "antd/es/radio/index.js";
 import DatePickerWrapper from "../Config/DatePicker/DatePickerConfig.jsx";
 import Image from "../assets/Images/Logo.png";
+import {MinusCircleOutlined, PlusOutlined} from "@ant-design/icons";
+import DateRangePickerWrapper from "../Config/DatePicker/DateRangePickerConfig.jsx";
 
 const PersonalInformation = () => {
     const rules = {
@@ -41,9 +43,20 @@ const PersonalInformation = () => {
         // todo handle form finish fail
     };
 
+    const handleDateChange = (value) => {
+        form.setFieldsValue({ date: value });
+    };
+
+    const handleDateAwardedChange = (value) => {
+        form.setFieldsValue({ dateAwarded: value });
+    };
+
+
+
+
     const handleDateRangeChange = (value) => {
         // Update the form field when the date range changes
-        form.setFieldsValue({ date: value });
+        form.setFieldsValue({ dateRange: value });
     };
 
     const containerStyle = {
@@ -156,17 +169,16 @@ const PersonalInformation = () => {
                                 rules={rules.date}
                                 label="Date"
                                 name="date"
-                                // Apply the custom validation message style
                                 style={validationMessageStyle}
                             >
-                                {/* Use the custom DateRangePickerWrapper component */}
                                 <DatePickerWrapper
                                     size={"large"}
                                     className={"w-full border border-gray-700 border-opacity-100"}
-                                    value={form.getFieldValue("dateRange")}
-                                    onChange={handleDateRangeChange}
+                                    value={form.getFieldValue("date")}
+                                    onChange={handleDateChange}
                                 />
                             </Form.Item>
+
                         </div>
 
                         <div className={"grid grid-cols-1"}>
@@ -211,7 +223,111 @@ const PersonalInformation = () => {
                         <Form.Item label="Passport/National ID Number:" name="IdNumber" rules={rules.IdNumber} style={validationMessageStyle}>
                             <Input size={"large"} className="border border-gray-700 border-opacity-100" />
                         </Form.Item>
+                        <div style={{ display: "flex", alignItems: "start" }}>
+                            <label className={"text-md font-semibold font-serif text-gray-800 py-5"}>
+                                {" "}
+                                2:    EDUCATIONAL RECORD TO DATE (list your top qualifications)
+                            </label>
+                        </div>
+                        <div>
+                            <Form.List name="users">
+                                {(fields, { add, remove }) => (
+                                    <>
+                                        {fields.map(({ key, name, ...restField }) => (
+                                            <Space
+                                                key={key}
+                                                align="baseline"
+                                                className={'grid grid-cols-1'}
+                                            >
+                                                <div className={'grid sm:grid-cols-1 lg:grid-cols-6 gap-5'}>
+                                                    <Form.Item
+                                                        style={validationMessageStyle}
+                                                        className={"md:col-span-2"}
+                                                        label={"Institution"}
+                                                        {...restField}
+                                                        name={[name, 'institution']}
+                                                        rules={[
+                                                            {
+                                                                required: true,
+                                                                message: 'Required Field',
+                                                            },
+                                                        ]}
+                                                    >
+                                                        <Input size={"large"} className="border border-gray-700 border-opacity-100" />
+                                                    </Form.Item>
 
+
+                                                    <Form.Item
+                                                        style={validationMessageStyle}
+                                                        label={"Dates"}
+                                                        className={"md:col-span-2"}
+                                                        {...restField}
+                                                        name={[name, 'dates']}
+                                                        rules={[
+                                                            {
+                                                                required: true,
+                                                                message: 'Required Field',
+                                                            },
+                                                        ]}
+                                                    >
+                                                        <DateRangePickerWrapper
+                                                            className={"w-full border border-gray-700 border-opacity-100"}
+                                                            size={"large"}
+                                                            value={form.getFieldValue('dates')}
+                                                            onChange={handleDateRangeChange} // Handle date range change
+                                                        />
+                                                    </Form.Item>
+                                                    <Form.Item
+                                                        style={validationMessageStyle}
+                                                    label={"Award"}
+                                                    className={"md:col-span-2"}
+                                                    {...restField}
+                                                    name={[name, 'Award']}
+                                                    rules={[
+                                                        {
+                                                            required: true,
+                                                            message: 'Required Field',
+                                                        },
+                                                    ]}
+                                                >
+                                                        <Input size={"large"} className="border border-gray-700 border-opacity-100" />
+                                                </Form.Item>
+                                                    <Form.Item
+                                                        label={"Date Awarded"}
+                                                        style={validationMessageStyle}
+                                                        className={"md:col-span-2"}
+                                                        {...restField}
+                                                        name={[name, 'dateAwarded']}
+                                                        rules={[
+                                                            {
+                                                                required: true,
+                                                                message: 'Required Field',
+                                                            },
+                                                        ]}
+                                                    >
+                                                        <DatePickerWrapper
+                                                            size={"large"}
+                                                            className={"w-full border border-gray-700 border-opacity-100"}
+                                                            value={form.getFieldValue(["dateAwarded"])} // Change the field name here
+                                                            onChange={handleDateAwardedChange}
+                                                        />
+                                                    </Form.Item>
+
+                                                    <MinusCircleOutlined onClick={() => remove(name)} />
+
+                                                </div>
+
+                                            </Space>
+                                        ))}
+                                        <Form.Item>
+                                            <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
+                                                Add qualifications
+                                            </Button>
+                                        </Form.Item>
+                                    </>
+                                )}
+                            </Form.List>
+                        </div>
                         <Form.Item>
                             <button className={"bg-blue-900 text-white w-1/4 h-10 rounded-2xl text-lg hover:bg-blue-950"} type="submit">
                                 Submit
